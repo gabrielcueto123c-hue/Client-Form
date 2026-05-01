@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Intake Form — Bodybuilding Coach</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --accent: #e8ff47;
+    --accent2: #ff4757;
+    --text: #f0f0f0;
+    --muted: #666;
+    --input-bg: #111;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 36px 20px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(232,255,71,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 2px;
+    line-height: 1;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero p {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 300px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    padding: 16px 20px 0;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+  }
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .progress-label {
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: color 0.3s;
+  }
+  .progress-label.active { color: var(--accent); }
+  .progress-bar-bg {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 25%;
+  }
+
+  /* SECTIONS */
+  .section {
+    display: none;
+    padding: 24px 20px;
+    animation: fadeIn 0.3s ease;
+  }
+  .section.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .section-icon {
+    width: 40px; height: 40px;
+    background: var(--accent);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 1px;
+    color: var(--text);
+    line-height: 1;
+  }
+  .section-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* FORM ELEMENTS */
+  .field {
+    margin-bottom: 18px;
+  }
+  label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  label span.req { color: var(--accent); margin-left: 2px; }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="date"],
+  select,
+  textarea {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    padding: 13px 16px;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+  }
+  select { cursor: pointer; }
+  textarea { resize: none; line-height: 1.6; }
+
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  /* CHECKBOX GROUP */
+  .check-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .check-item {
+    position: relative;
+  }
+  .check-item input[type="checkbox"] {
+    position: absolute; opacity: 0; width: 0; height: 0;
+  }
+  .check-item label {
+    display: block;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .check-item input:checked + label {
+    border-color: var(--accent);
+    color: var(--bg);
+    background: var(--accent);
+  }
+
+  /* RADIO GROUP */
+  .radio-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .radio-item { position: relative; }
+  .radio-item input[type="radio"] {
+    position: absolute; opacity: 0; width: 0; height: 0;
+  }
+  .radio-item label {
+    display: block;
+    padding: 10px 18px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .radio-item input:checked + label {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(232,255,71,0.06);
+  }
+
+  /* SCALE */
+  .scale-wrap { display: flex; gap: 6px; }
+  .scale-item { flex: 1; }
+  .scale-item input[type="radio"] { position: absolute; opacity: 0; }
+  .scale-item label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .scale-item input:checked + label {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 24px 0;
+  }
+
+  /* CARD */
+  .info-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .info-card strong { color: var(--text); }
+
+  /* NAVIGATION */
+  .nav-wrap {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    gap: 10px;
+  }
+  .btn-back {
+    flex: 0 0 auto;
+    padding: 14px 20px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-back:hover { border-color: var(--text); color: var(--text); }
+  .btn-next {
+    flex: 1;
+    padding: 14px;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    color: var(--bg);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-next:active { transform: scale(0.98); opacity: 0.9; }
+
+  /* SUCCESS */
+  .success-screen {
+    display: none;
+    padding: 40px 20px;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+  }
+  .success-icon {
+    width: 80px; height: 80px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+    margin: 0 auto 24px;
+  }
+  .success-screen h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+  .success-screen p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 30px;
+  }
+
+  /* SUMMARY */
+  .summary-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    text-align: left;
+  }
+  .summary-block h4 {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row span:first-child { color: var(--muted); }
+  .summary-row span:last-child { font-weight: 500; color: var(--text); max-width: 55%; text-align: right; }
+
+  .btn-copy {
+    width: 100%;
+    padding: 16px;
+    background: var(--surface2);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    color: var(--accent);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.2s;
+  }
+  .btn-copy:active { background: rgba(232,255,71,0.1); }
+
+  .copied-msg {
+    text-align: center;
+    font-size: 12px;
+    color: var(--accent);
+    margin-top: 8px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .copied-msg.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-tag">Bodybuilding Coach</div>
+  <h1>NEW CLIENT<br><span>INTAKE FORM</span></h1>
+  <p>Fill out all fields so your coach can design your personalized plan.</p>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-labels">
+    <span class="progress-label active" id="lbl-1">Personal</span>
+    <span class="progress-label" id="lbl-2">Physical</span>
+    <span class="progress-label" id="lbl-3">Medical</span>
+    <span class="progress-label" id="lbl-4">Habits</span>
+  </div>
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+</div>
+
+<!-- SECTION 1: PERSONAL INFO -->
+<div class="section active" id="sec-1">
+  <div class="section-header">
+    <div class="section-icon">👤</div>
+    <div>
+      <div class="section-title">PERSONAL INFO</div>
+      <div class="section-sub">Basic contact information</div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Full name <span class="req">*</span></label>
+    <input type="text" id="nombre" placeholder="e.g. Carlos Mendez">
+  </div>
+  <div class="row2">
+    <div class="field">
+      <label>Age <span class="req">*</span></label>
+      <input type="number" id="edad" placeholder="28" min="14" max="80">
+    </div>
+    <div class="field">
+      <label>Sex <span class="req">*</span></label>
+      <select id="sexo">
+        <option value="">— Select —</option>
+        <option>Male</option>
+        <option>Female</option>
+      </select>
+    </div>
+  </div>
+  <div class="field">
+    <label>WhatsApp / Phone</label>
+    <input type="tel" id="tel" placeholder="+1 (555) 000-0000">
+  </div>
+  <div class="field">
+    <label>Email</label>
+    <input type="email" id="email" placeholder="email@example.com">
+  </div>
+  <div class="field">
+    <label>Occupation</label>
+    <input type="text" id="ocupacion" placeholder="e.g. Engineer, Student...">
+  </div>
+  <div class="field">
+    <label>What is your main goal? <span class="req">*</span></label>
+    <select id="objetivo">
+      <option value="">— Select —</option>
+      <option>Gain muscle mass (Bulk)</option>
+      <option>Lose body fat (Cut)</option>
+      <option>Body recomposition</option>
+      <option>Increase strength</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>In how long do you want to reach your goal?</label>
+    <select id="plazo">
+      <option value="">— Select —</option>
+      <option>1 to 3 months</option>
+      <option>3 to 6 months</option>
+      <option>6 to 12 months</option>
+      <option>More than 1 year</option>
+    </select>
+  </div>
+</div>
+
+<!-- SECTION 2: PHYSICAL DATA -->
+<div class="section" id="sec-2">
+  <div class="section-header">
+    <div class="section-icon">⚖️</div>
+    <div>
+      <div class="section-title">PHYSICAL DATA</div>
+      <div class="section-sub">Your current body measurements</div>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <strong>💡 Tip:</strong> Take these measurements in the morning, fasted, with light clothing for best accuracy.
+  </div>
+
+  <div class="row2">
+    <div class="field">
+      <label>Current weight (kg) <span class="req">*</span></label>
+      <input type="number" id="peso" placeholder="85" step="0.1">
+    </div>
+    <div class="field">
+      <label>Height (cm) <span class="req">*</span></label>
+      <input type="number" id="altura" placeholder="178">
+    </div>
+  </div>
+  <div class="field">
+    <label>Body fat % <span style="color:var(--muted);font-size:10px;text-transform:none;letter-spacing:0;">(not required, but helpful if known)</span></label>
+    <input type="number" id="grasa" placeholder="e.g. 18" step="0.1">
+  </div>
+
+  <div class="divider"></div>
+  <p style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;">Measurements (optional but useful)</p>
+
+  <div class="row3">
+    <div class="field">
+      <label>Chest (cm)</label>
+      <input type="number" id="pecho" placeholder="100">
+    </div>
+    <div class="field">
+      <label>Waist (cm)</label>
+      <input type="number" id="cintura" placeholder="80">
+    </div>
+    <div class="field">
+      <label>Hips (cm)</label>
+      <input type="number" id="cadera" placeholder="95">
+    </div>
+  </div>
+  <div class="row3">
+    <div class="field">
+      <label>Arm (cm)</label>
+      <input type="number" id="brazo" placeholder="38">
+    </div>
+    <div class="field">
+      <label>Thigh (cm)</label>
+      <input type="number" id="muslo" placeholder="55">
+    </div>
+    <div class="field">
+      <label>Calf (cm)</label>
+      <input type="number" id="pantorrilla" placeholder="36">
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="field">
+    <label>Experience level <span class="req">*</span></label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="exp" id="exp1" value="Beginner"><label for="exp1">Beginner</label></div>
+      <div class="radio-item"><input type="radio" name="exp" id="exp2" value="Intermediate"><label for="exp2">Intermediate</label></div>
+      <div class="radio-item"><input type="radio" name="exp" id="exp3" value="Advanced"><label for="exp3">Advanced</label></div>
+    </div>
+  </div>
+  <div class="field">
+    <label>Years training</label>
+    <select id="anios_gym">
+      <option value="">— Select —</option>
+      <option>Less than 1 year</option>
+      <option>1 to 2 years</option>
+      <option>2 to 5 years</option>
+      <option>More than 5 years</option>
+    </select>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="field">
+    <label>Gym equipment available <span class="req">*</span></label>
+    <select id="gym_equip">
+      <option value="">— Select —</option>
+      <option>Full commercial gym (all machines & free weights)</option>
+      <option>Intermediate gym (free weights + some machines)</option>
+      <option>Basic gym (dumbbells, barbells, squat rack)</option>
+      <option>Home gym (limited equipment)</option>
+      <option>Home / No equipment (bodyweight only)</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Any specific equipment missing or unavailable?</label>
+    <textarea id="gym_notes" rows="2" placeholder="e.g. No cable machine, no leg press, training at home..."></textarea>
+  </div>
+</div>
+
+<!-- SECTION 3: MEDICAL HISTORY -->
+<div class="section" id="sec-3">
+  <div class="section-header">
+    <div class="section-icon">🏥</div>
+    <div>
+      <div class="section-title">MEDICAL HISTORY</div>
+      <div class="section-sub">Important info for your safety</div>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <strong>⚠️ Important:</strong> This information is confidential and used only to personalize your plan safely.
+  </div>
+
+  <div class="field">
+    <label>Do you have any medical condition? <span class="req">*</span></label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="cond" id="cond_no" value="No"><label for="cond_no">No, none</label></div>
+      <div class="radio-item"><input type="radio" name="cond" id="cond_si" value="Yes"><label for="cond_si">Yes, I do</label></div>
+    </div>
+  </div>
+  <div class="field" id="cond_detail" style="display:none;">
+    <label>Which one(s)?</label>
+    <textarea id="condiciones" rows="3" placeholder="e.g. Type 2 diabetes, hypertension..."></textarea>
+  </div>
+
+  <div class="field">
+    <label>Current or previous injuries</label>
+    <div class="check-group">
+      <div class="check-item"><input type="checkbox" id="les_rodilla"><label for="les_rodilla">Knee</label></div>
+      <div class="check-item"><input type="checkbox" id="les_espalda"><label for="les_espalda">Lower back</label></div>
+      <div class="check-item"><input type="checkbox" id="les_hombro"><label for="les_hombro">Shoulder</label></div>
+      <div class="check-item"><input type="checkbox" id="les_cuello"><label for="les_cuello">Neck</label></div>
+      <div class="check-item"><input type="checkbox" id="les_codo"><label for="les_codo">Elbow</label></div>
+      <div class="check-item"><input type="checkbox" id="les_cadera"><label for="les_cadera">Hip</label></div>
+      <div class="check-item"><input type="checkbox" id="les_ninguna"><label for="les_ninguna">None</label></div>
+    </div>
+  </div>
+  <div class="field">
+    <label>Injury details (if any)</label>
+    <textarea id="lesiones_det" rows="2" placeholder="e.g. L4-L5 herniated disc, surgery 2 years ago..."></textarea>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="field">
+    <label>Are you currently taking any medication?</label>
+    <textarea id="medicamentos" rows="2" placeholder="e.g. Metformin, blood pressure meds... or write 'None'"></textarea>
+  </div>
+  <div class="field">
+    <label>Food allergies or intolerances</label>
+    <div class="check-group">
+      <div class="check-item"><input type="checkbox" id="al_gluten"><label for="al_gluten">Gluten</label></div>
+      <div class="check-item"><input type="checkbox" id="al_lactosa"><label for="al_lactosa">Lactose</label></div>
+      <div class="check-item"><input type="checkbox" id="al_mariscos"><label for="al_mariscos">Shellfish</label></div>
+      <div class="check-item"><input type="checkbox" id="al_nueces"><label for="al_nueces">Nuts</label></div>
+      <div class="check-item"><input type="checkbox" id="al_huevo"><label for="al_huevo">Eggs</label></div>
+      <div class="check-item"><input type="checkbox" id="al_ninguna"><label for="al_ninguna">None</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 4: HABITS -->
+<div class="section" id="sec-4">
+  <div class="section-header">
+    <div class="section-icon">🍽️</div>
+    <div>
+      <div class="section-title">HABITS & LIFESTYLE</div>
+      <div class="section-sub">To fully personalize your diet</div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Daily activity level <span class="req">*</span></label>
+    <select id="actividad">
+      <option value="">— Select —</option>
+      <option>Sedentary (desk job, little movement)</option>
+      <option>Lightly active (some walking, active job)</option>
+      <option>Moderately active (exercise 3-4 days/week)</option>
+      <option>Active (exercise 5-6 days/week)</option>
+      <option>Very active (double sessions, physical job)</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>How many days per week do you train?</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="dias" id="d1" value="1-2"><label for="d1">1-2</label></div>
+      <div class="radio-item"><input type="radio" name="dias" id="d2" value="3-4"><label for="d2">3-4</label></div>
+      <div class="radio-item"><input type="radio" name="dias" id="d3" value="5-6"><label for="d3">5-6</label></div>
+      <div class="radio-item"><input type="radio" name="dias" id="d4" value="Every day"><label for="d4">Every day</label></div>
+    </div>
+  </div>
+  <div class="field">
+    <label>What time do you usually train?</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="hora_gym" id="hg1" value="Morning"><label for="hg1">🌅 Morning</label></div>
+      <div class="radio-item"><input type="radio" name="hora_gym" id="hg2" value="Midday"><label for="hg2">☀️ Midday</label></div>
+      <div class="radio-item"><input type="radio" name="hora_gym" id="hg3" value="Afternoon"><label for="hg3">🌆 Afternoon</label></div>
+      <div class="radio-item"><input type="radio" name="hora_gym" id="hg4" value="Night"><label for="hg4">🌙 Night</label></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="field">
+    <label>How many meals do you eat per day currently?</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="comidas" id="c2" value="2"><label for="c2">2</label></div>
+      <div class="radio-item"><input type="radio" name="comidas" id="c3" value="3"><label for="c3">3</label></div>
+      <div class="radio-item"><input type="radio" name="comidas" id="c4" value="4"><label for="c4">4</label></div>
+      <div class="radio-item"><input type="radio" name="comidas" id="c5" value="5+"><label for="c5">5+</label></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Foods you dislike or don't eat</label>
+    <textarea id="no_come" rows="2" placeholder="e.g. No pork, hate broccoli, don't eat tuna..."></textarea>
+  </div>
+  <div class="field">
+    <label>Favorite foods or foods you eat frequently</label>
+    <textarea id="favoritos" rows="2" placeholder="e.g. Chicken, rice, eggs, oats, fruits..."></textarea>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="field">
+    <label>How many hours do you sleep per night?</label>
+    <div class="radio-group">
+      <div class="radio-item"><input type="radio" name="suenio" id="s1" value="Less than 6h"><label for="s1">&lt;6h</label></div>
+      <div class="radio-item"><input type="radio" name="suenio" id="s2" value="6-7h"><label for="s2">6-7h</label></div>
+      <div class="radio-item"><input type="radio" name="suenio" id="s3" value="7-8h"><label for="s3">7-8h</label></div>
+      <div class="radio-item"><input type="radio" name="suenio" id="s4" value="More than 8h"><label for="s4">+8h</label></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Daily stress level</label>
+    <div class="scale-wrap">
+      <div class="scale-item"><input type="radio" name="estres" id="e1" value="1"><label for="e1">1</label></div>
+      <div class="scale-item"><input type="radio" name="estres" id="e2" value="2"><label for="e2">2</label></div>
+      <div class="scale-item"><input type="radio" name="estres" id="e3" value="3"><label for="e3">3</label></div>
+      <div class="scale-item"><input type="radio" name="estres" id="e4" value="4"><label for="e4">4</label></div>
+      <div class="scale-item"><input type="radio" name="estres" id="e5" value="5"><label for="e5">5</label></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:5px;">
+      <span style="font-size:10px;color:var(--muted)">No stress</span>
+      <span style="font-size:10px;color:var(--muted)">Very stressed</span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Supplements currently taking</label>
+    <div class="check-group">
+      <div class="check-item"><input type="checkbox" id="sup_whey"><label for="sup_whey">Whey Protein</label></div>
+      <div class="check-item"><input type="checkbox" id="sup_creat"><label for="sup_creat">Creatine</label></div>
+      <div class="check-item"><input type="checkbox" id="sup_cafeina"><label for="sup_cafeina">Pre-workout</label></div>
+      <div class="check-item"><input type="checkbox" id="sup_omega"><label for="sup_omega">Omega-3</label></div>
+      <div class="check-item"><input type="checkbox" id="sup_vit"><label for="sup_vit">Vitamins</label></div>
+      <div class="check-item"><input type="checkbox" id="sup_casein"><label for="sup_casein">Casein</label></div>
+      <div class="check-item"><input type="checkbox" id="sup_peds"><label for="sup_peds">PEDs</label></div>
+      <div class="check-item"><input type="checkbox" id="sup_peptides"><label for="sup_peptides">Peptides</label></div>
+      <div class="check-item"><input type="checkbox" id="sup_ninguno"><label for="sup_ninguno">None</label></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Anything else your coach should know?</label>
+    <textarea id="extra" rows="3" placeholder="Frequent travel, special schedules, budget restrictions, etc."></textarea>
+  </div>
+</div>
+
+<!-- SUCCESS SCREEN -->
+<div class="success-screen" id="success">
+  <div class="success-icon">✓</div>
+  <h2>FORM COMPLETED!</h2>
+  <p>Your information has been recorded. Your coach will review it and get back to you soon with your personalized plan.</p>
+
+  <div id="resumen"></div>
+
+  <button class="btn-copy" onclick="copiarResumen()">📋 Copy summary for coach</button>
+  <div class="copied-msg" id="copied-msg">Copied to clipboard!</div>
+</div>
+
+<!-- NAVIGATION -->
+<div class="nav-wrap" id="nav-wrap">
+  <button class="btn-back" id="btn-back" onclick="goBack()" style="display:none">← Back</button>
+  <button class="btn-next" id="btn-next" onclick="goNext()">NEXT →</button>
+</div>
+
+<script>
+  let currentSection = 1;
+  const totalSections = 4;
+
+  function updateProgress() {
+    const pct = (currentSection / totalSections) * 100;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    for (let i = 1; i <= totalSections; i++) {
+      const lbl = document.getElementById('lbl-' + i);
+      lbl.classList.toggle('active', i === currentSection);
+    }
+    document.getElementById('btn-back').style.display = currentSection > 1 ? 'block' : 'none';
+    const btnNext = document.getElementById('btn-next');
+    btnNext.textContent = currentSection === totalSections ? 'SUBMIT FORM ✓' : 'NEXT →';
+  }
+
+  function goNext() {
+    if (!validateSection(currentSection)) return;
+    if (currentSection === totalSections) {
+      showSuccess();
+      return;
+    }
+    document.getElementById('sec-' + currentSection).classList.remove('active');
+    currentSection++;
+    document.getElementById('sec-' + currentSection).classList.add('active');
+    updateProgress();
+    window.scrollTo(0, 0);
+  }
+
+  function goBack() {
+    document.getElementById('sec-' + currentSection).classList.remove('active');
+    currentSection--;
+    document.getElementById('sec-' + currentSection).classList.add('active');
+    updateProgress();
+    window.scrollTo(0, 0);
+  }
+
+  function validateSection(n) {
+    const required = {
+      1: ['nombre', 'edad', 'sexo', 'objetivo'],
+      2: ['peso', 'altura', 'gym_equip'],
+      3: [],
+      4: ['actividad']
+    };
+    for (let id of (required[n] || [])) {
+      const el = document.getElementById(id);
+      if (!el || !el.value.trim()) {
+        el.style.borderColor = '#ff4757';
+        el.focus();
+        el.addEventListener('input', () => el.style.borderColor = '', {once: true});
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function getVal(id) {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+
+  function getRadio(name) {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? el.value : '—';
+  }
+
+  function getChecks(ids) {
+    return ids.filter(id => {
+      const el = document.getElementById(id);
+      return el && el.checked;
+    }).map(id => document.querySelector(`label[for="${id}"]`).textContent).join(', ') || '—';
+  }
+
+  function showSuccess() {
+    document.getElementById('sec-4').classList.remove('active');
+    document.getElementById('nav-wrap').style.display = 'none';
+    document.getElementById('success').style.display = 'block';
+    document.getElementById('progress-fill').style.width = '100%';
+    window.scrollTo(0, 0);
+
+    const resumen = document.getElementById('resumen');
+    resumen.innerHTML = `
+      <div class="summary-block">
+        <h4>👤 Personal Info</h4>
+        <div class="summary-row"><span>Name</span><span>${getVal('nombre')}</span></div>
+        <div class="summary-row"><span>Age / Sex</span><span>${getVal('edad')} yrs / ${getVal('sexo')}</span></div>
+        <div class="summary-row"><span>Goal</span><span>${getVal('objetivo')}</span></div>
+        <div class="summary-row"><span>Timeline</span><span>${getVal('plazo') || '—'}</span></div>
+        <div class="summary-row"><span>WhatsApp</span><span>${getVal('tel') || '—'}</span></div>
+      </div>
+      <div class="summary-block">
+        <h4>⚖️ Physical Data</h4>
+        <div class="summary-row"><span>Weight / Height</span><span>${getVal('peso')}kg / ${getVal('altura')}cm</span></div>
+        <div class="summary-row"><span>Body fat %</span><span>${getVal('grasa') || '—'}%</span></div>
+        <div class="summary-row"><span>Experience</span><span>${getRadio('exp')}</span></div>
+        <div class="summary-row"><span>Years training</span><span>${getVal('anios_gym') || '—'}</span></div>
+        <div class="summary-row"><span>Gym equipment</span><span>${getVal('gym_equip')}</span></div>
+        <div class="summary-row"><span>Equipment notes</span><span>${getVal('gym_notes') || '—'}</span></div>
+      </div>
+      <div class="summary-block">
+        <h4>🏥 Medical</h4>
+        <div class="summary-row"><span>Medical condition</span><span>${getRadio('cond')}</span></div>
+        <div class="summary-row"><span>Details</span><span>${getVal('condiciones') || '—'}</span></div>
+        <div class="summary-row"><span>Injuries</span><span>${getChecks(['les_rodilla','les_espalda','les_hombro','les_cuello','les_codo','les_cadera','les_ninguna'])}</span></div>
+        <div class="summary-row"><span>Allergies</span><span>${getChecks(['al_gluten','al_lactosa','al_mariscos','al_nueces','al_huevo','al_ninguna'])}</span></div>
+      </div>
+      <div class="summary-block">
+        <h4>🍽️ Habits</h4>
+        <div class="summary-row"><span>Activity level</span><span>${getVal('actividad')}</span></div>
+        <div class="summary-row"><span>Training days</span><span>${getRadio('dias')}</span></div>
+        <div class="summary-row"><span>Training time</span><span>${getRadio('hora_gym')}</span></div>
+        <div class="summary-row"><span>Meals/day</span><span>${getRadio('comidas')}</span></div>
+        <div class="summary-row"><span>Sleep</span><span>${getRadio('suenio')}</span></div>
+        <div class="summary-row"><span>Stress</span><span>${getRadio('estres')}/5</span></div>
+        <div class="summary-row"><span>Supplements</span><span>${getChecks(['sup_whey','sup_creat','sup_cafeina','sup_omega','sup_vit','sup_casein','sup_peds','sup_peptides','sup_ninguno'])}</span></div>
+        <div class="summary-row"><span>Dislikes</span><span>${getVal('no_come') || '—'}</span></div>
+        <div class="summary-row"><span>Favorites</span><span>${getVal('favoritos') || '—'}</span></div>
+        <div class="summary-row"><span>Extra notes</span><span>${getVal('extra') || '—'}</span></div>
+      </div>
+    `;
+  }
+
+  function copiarResumen() {
+    const texto = `
+CLIENT INTAKE — ${getVal('nombre')}
+================================
+PERSONAL
+Name: ${getVal('nombre')}
+Age: ${getVal('edad')} | Sex: ${getVal('sexo')}
+Phone: ${getVal('tel')} | Email: ${getVal('email')}
+Goal: ${getVal('objetivo')}
+Timeline: ${getVal('plazo')}
+
+PHYSICAL
+Weight: ${getVal('peso')}kg | Height: ${getVal('altura')}cm
+Body fat: ${getVal('grasa') || '—'}%
+Chest: ${getVal('pecho')}cm | Waist: ${getVal('cintura')}cm
+Hips: ${getVal('cadera')}cm | Arm: ${getVal('brazo')}cm
+Experience: ${getRadio('exp')} | Years training: ${getVal('anios_gym')}
+Gym equipment: ${getVal('gym_equip')}
+Equipment notes: ${getVal('gym_notes')}
+
+MEDICAL
+Medical condition: ${getRadio('cond')} ${getVal('condiciones')}
+Injuries: ${getChecks(['les_rodilla','les_espalda','les_hombro','les_cuello','les_codo','les_cadera','les_ninguna'])}
+Allergies: ${getChecks(['al_gluten','al_lactosa','al_mariscos','al_nueces','al_huevo','al_ninguna'])}
+Medications: ${getVal('medicamentos')}
+
+HABITS
+Activity: ${getVal('actividad')}
+Training days: ${getRadio('dias')} | Time: ${getRadio('hora_gym')}
+Meals/day: ${getRadio('comidas')}
+Sleep: ${getRadio('suenio')} | Stress: ${getRadio('estres')}/5
+Supplements: ${getChecks(['sup_whey','sup_creat','sup_cafeina','sup_omega','sup_vit','sup_casein','sup_peds','sup_peptides','sup_ninguno'])}
+Dislikes: ${getVal('no_come')}
+Favorites: ${getVal('favoritos')}
+Notes: ${getVal('extra')}
+    `.trim();
+
+    navigator.clipboard.writeText(texto).then(() => {
+      const msg = document.getElementById('copied-msg');
+      msg.classList.add('show');
+      setTimeout(() => msg.classList.remove('show'), 3000);
+    });
+  }
+
+  // Toggle medical condition
+  document.querySelectorAll('input[name="cond"]').forEach(r => {
+    r.addEventListener('change', () => {
+      document.getElementById('cond_detail').style.display =
+        document.getElementById('cond_si').checked ? 'block' : 'none';
+    });
+  });
+
+  updateProgress();
+</script>
+</body>
+</html>
